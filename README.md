@@ -22,7 +22,7 @@ cd ~/.claude/skills
 git init
 git remote add origin https://github.com/syrashid/claude-skills.git
 git fetch origin
-git checkout -t origin/master   # adjust if the default branch differs
+git checkout -t origin/main   # adjust if the default branch differs
 ```
 
 Then confirm the skills are picked up by running `/delta-review` or `/grill_me`
