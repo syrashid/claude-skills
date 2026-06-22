@@ -2,8 +2,33 @@
 
 Personal [Claude Code](https://docs.claude.com/en/docs/claude-code) skills.
 
-Skills live under `~/.claude/skills/`. To use these on another machine, clone this
-repo into that path (or symlink each skill directory into it).
+Skills live under `~/.claude/skills/`.
+
+## Setup on a new computer
+
+These skills must end up at `~/.claude/skills/` for Claude Code to discover them.
+
+**If `~/.claude/skills/` does not exist yet** (fresh machine), clone directly into it:
+
+```bash
+git clone https://github.com/syrashid/claude-skills.git ~/.claude/skills
+```
+
+**If `~/.claude/skills/` already exists** (e.g. Claude Code created it), `git clone`
+into a non-empty directory will fail. Initialize in place instead:
+
+```bash
+cd ~/.claude/skills
+git init
+git remote add origin https://github.com/syrashid/claude-skills.git
+git fetch origin
+git checkout -t origin/master   # adjust if the default branch differs
+```
+
+Then confirm the skills are picked up by running `/delta-review` or `/grill_me`
+in Claude Code (restart the session if they don't appear immediately).
+
+To pull future updates: `git -C ~/.claude/skills pull`.
 
 ## Skills
 
