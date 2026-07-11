@@ -46,6 +46,8 @@ git log --oneline <base>..HEAD          # commits in scope
 
 For "recent work" scope, diff against the appropriate recent commit (e.g. `HEAD~N` or a SHA the user names) instead of the merge-base. Read the full files around the most important hunks — you cannot grill on code you've only seen as a diff fragment.
 
+Also read `concepts.md` in this skill's directory — the cross-session concept ledger (see "The concept ledger" below). Unchecked entries are retest material for Part 3.
+
 ## Part 1 — High-level summary
 
 Give a tight, structured overview of what the branch does. Cover:
@@ -67,11 +69,15 @@ Pick the **most important files** — not all of them. Prioritize in this order:
 
 Skip boilerplate, generated files, trivial wiring. For each chosen file, walk the important changes **line by line**, explaining what each meaningful hunk does and *why it's written that way*. Use `file_path:line_number` references so the user can jump to source. Flag anything that looks subtly wrong or worth questioning, but save deep critique for Part 3.
 
+**This is the teaching pass.** The user is usually reviewing code an agent wrote, not code they typed — so Part 2 is where understanding gets built, not just displayed. Whenever a hunk embodies a transferable software-engineering concept (an idempotency guard, a validation context, a dunning flow, a language idiom like Ruby's `module_function`), **name the concept and teach it in two or three sentences**: the general pattern, why it applies here, where it shows up again. Part 3 exists to make these concepts stick, so anything you plan to grill on should be taught or at least surfaced here first.
+
 End with: **"Review the deep dive. Tell me when you're ready to be grilled."** Then STOP.
 
 ## Part 3 — The grilling
 
 Ask **5–15 open-ended questions, one at a time**, scaling the count to the size and complexity of the change. Every question must be **grounded in the actual diff** — reference specific code, decisions, or tradeoffs the user made. No generic textbook questions.
+
+**Question shape.** A question is one scenario plus **at most two asks** (numbered parts, sub-questions, or "and also…" clauses). If a topic genuinely needs a third ask, that third ask is a *new question*: give it its own slot in the queue and count it against the 5–15. The cap applies to what you plan and ask up front; reactive follow-ups that press on a weak answer (protocol step 2 below) are not asks and never count. Count asks honestly: a trailing "— and how would you fix it?" clause is a third ask, not punctuation — save it for the follow-up.
 
 **Before you start, build a question queue.** Draft a numbered list of planned questions that spans the dimensions below — don't ask ten architecture questions and skip CS fundamentals or testing entirely. Aim for at least one question from most dimensions, weighted toward whatever this particular change actually stresses. Keep this queue as a concrete artifact you track throughout Part 3: which question you're on, which are answered, which remain. You don't have to show the user the full list (it would let them pre-load answers), but you must hold yourself to it and always know your place in it. Adaptive difficulty changes *what* the next question probes, not whether you work through the queue.
 
@@ -82,11 +88,17 @@ Draw questions across these dimensions:
 - **Design choices & tradeoffs** — "why X instead of Y?", what they gave up, what assumptions they baked in.
 - **Engineering judgment** — testing strategy, observability, migration safety, rollback, edge cases, race conditions.
 - **CS fundamentals** — complexity, data structures, concurrency, consistency, the theory under the code.
+- **Operational readiness** — this breaks at 2am: what signal fires, what do you look at first, what's the rollback?
+- **Blast radius & rollout** — who else must know before this merges; migration/rollout sequencing; backward compatibility; which decisions are one-way doors vs. cheap to reverse.
+- **Steel-manning** — after they defend a choice, make them argue the strongest case for the alternative they rejected.
+
+Part 3 questions should mostly make the user **apply what Parts 1–2 taught** to failure scenarios and consequences — teach first, then test. A question about something never surfaced earlier should be the exception, not the pattern.
 
 **Grilling protocol for each question:**
 
 1. Ask one question. Stop and wait for the answer.
 2. If the answer is vague, incomplete, or wrong, **push back** — don't accept it and move on. Ask a sharper follow-up ("okay, but what happens when two of these run concurrently?"). Keep pressing until they've genuinely engaged or conceded.
+2a. **Anchor assertions to code.** When the user asserts what the code *does* at runtime, ask which function, class, or module does it ("which method advances the stage?"). An assertion that can't be anchored — or anchors to code that doesn't exist — scores as missed: confidently wrong claims about code behavior are the most expensive habit at senior+ levels, and this is where it gets trained out.
 3. Do **not** reveal the strong answer mid-question — let them take their real shot first.
 4. Silently score the answer **solid / shaky / missed** and keep a running tally — you'll need it for the final grade.
 5. Then move to the next question in the queue.
@@ -112,10 +124,18 @@ The goal is to keep every question near the edge of what they can answer.
 
 Grade hard. The point is to expose gaps *and then fill them* — they should walk away understanding what they didn't before, not just knowing they scored poorly.
 
+## The concept ledger
+
+`concepts.md` (next to this file) is a **cross-repo ledger of transferable software-engineering concepts** the user is learning — the curriculum that persists between sessions. The user's goal is leveling up as an engineer, so entries live at the software-engineering level, never the repository level: patterns ("idempotency keys"), failure modes ("dual-write problem"), testing philosophies ("test your model of the contract, not the contract"), domain mechanics ("dunning"), language idioms ("Ruby `module_function`"). *"The webhook table has a unique index"* is not an entry; *"idempotent ingestion via a uniqueness constraint + processed-at guard"* is.
+
+- **Retest (Part 3):** include **1–2 questions** on unchecked ledger entries, applied to the *current* branch's code where it plausibly connects, abstract otherwise. Retests count as queued questions. **The PR is the syllabus, the ledger is the review**: roughly 80% of Part 3 comes from the branch and no more than ~20% from the ledger — retests never crowd out the diff. Only when the PR is very small may the ledger share grow.
+- **Update (after the grade):** append every new concept the session taught or exposed as a gap, one line each: `- [ ] <concept> — <one-sentence essence> (introduced YYYY-MM-DD, <context>)`. When the user answers a retest solidly, check it off with the date. A concept stays in rotation until nailed; if a checked-off concept resurfaces as a miss, uncheck it.
+
 ## Common mistakes
 
 - **Barreling through multiple parts in one turn.** The stops are the skill. Honor them.
 - **Generic questions.** "What is a database index?" is worthless. "You added an index on `check_ins.mpuser_id` in this migration — why that column and not the composite, and what query are you optimizing?" is the job.
+- **Stuffing three-plus parts into each question.** Parts multiply: a 12-question grill with 3 pre-planned parts each is really 36 questions and exhausts the user. One scenario, at most two asks; promote any third ask to its own queue slot.
 - **Accepting a weak answer.** A grill that takes the first answer isn't a grill. Follow up.
 - **Grilling on code you didn't read in full.** Read the surrounding files, not just the diff hunks.
 - **Softening the grade.** Honest beats kind here.
