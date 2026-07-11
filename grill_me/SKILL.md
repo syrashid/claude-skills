@@ -46,7 +46,7 @@ git log --oneline <base>..HEAD          # commits in scope
 
 For "recent work" scope, diff against the appropriate recent commit (e.g. `HEAD~N` or a SHA the user names) instead of the merge-base. Read the full files around the most important hunks — you cannot grill on code you've only seen as a diff fragment.
 
-Also read `concepts.md` in this skill's directory — the cross-session concept ledger (see "The concept ledger" below). Unchecked entries are retest material for Part 3.
+Also read the concept ledgers in this skill's `concepts/` directory (see "The concept ledger" below): always `concepts/general.md`, plus any topic ledger whose domain the branch touches — e.g. `concepts/machine-learning.md` whenever the project or diff is ML/AI-flavored (embeddings, retrieval/RAG, chunking, model training or evaluation, LLM calls, prompt systems). Unchecked entries in every ledger you read are retest material for Part 3.
 
 ## Part 1 — High-level summary
 
@@ -126,10 +126,16 @@ Grade hard. The point is to expose gaps *and then fill them* — they should wal
 
 ## The concept ledger
 
-`concepts.md` (next to this file) is a **cross-repo ledger of transferable software-engineering concepts** the user is learning — the curriculum that persists between sessions. The user's goal is leveling up as an engineer, so entries live at the software-engineering level, never the repository level: patterns ("idempotency keys"), failure modes ("dual-write problem"), testing philosophies ("test your model of the contract, not the contract"), domain mechanics ("dunning"), language idioms ("Ruby `module_function`"). *"The webhook table has a unique index"* is not an entry; *"idempotent ingestion via a uniqueness constraint + processed-at guard"* is.
+`concepts/` (next to this file) holds **cross-repo ledgers of transferable concepts** the user is learning — the curriculum that persists between sessions, split by topic:
 
-- **Retest (Part 3):** include **1–2 questions** on unchecked ledger entries, applied to the *current* branch's code where it plausibly connects, abstract otherwise. Retests count as queued questions. **The PR is the syllabus, the ledger is the review**: roughly 80% of Part 3 comes from the branch and no more than ~20% from the ledger — retests never crowd out the diff. Only when the PR is very small may the ledger share grow.
-- **Update (after the grade):** append every new concept the session taught or exposed as a gap, one line each: `- [ ] <concept> — <one-sentence essence> (introduced YYYY-MM-DD, <context>)`. When the user answers a retest solidly, check it off with the date. A concept stays in rotation until nailed; if a checked-off concept resurfaces as a miss, uncheck it.
+- **`concepts/general.md`** — software engineering. Patterns ("idempotency keys"), failure modes ("dual-write problem"), testing philosophies ("test your model of the contract, not the contract"), domain mechanics ("dunning"), language idioms ("Ruby `module_function`"). Read this **every session**.
+- **`concepts/machine-learning.md`** — ML/AI. Retrieval & RAG design, chunking/embedding tradeoffs, model training and evaluation, LLM-system and prompt engineering. The user has an ML master's and wants these skills kept sharp: read this whenever the project or branch is ML/AI-flavored, weight retests toward it when the diff touches ML directly, and file new ML concepts here rather than in general.md.
+- New topic files may be added sparingly when a durable third domain emerges; `general.md` is the default home for anything that doesn't clearly belong to a topic.
+
+Entries live at the concept level, never the repository level: *"the webhook table has a unique index"* is not an entry; *"idempotent ingestion via a uniqueness constraint + processed-at guard"* is.
+
+- **Retest (Part 3):** include **1–2 questions** on unchecked entries drawn from *every ledger read this session*, applied to the current branch's code where it plausibly connects, abstract otherwise. Retests count as queued questions. **The PR is the syllabus, the ledger is the review**: roughly 80% of Part 3 comes from the branch and no more than ~20% from the ledgers — retests never crowd out the diff. Only when the PR is very small may the ledger share grow.
+- **Update (after the grade):** append every new concept the session taught or exposed as a gap — one line each, filed into the topic file it belongs to: `- [ ] <concept> — <one-sentence essence> (introduced YYYY-MM-DD, <context>)`. When the user answers a retest solidly, check it off with the date. A concept stays in rotation until nailed; if a checked-off concept resurfaces as a miss, uncheck it.
 
 ## Common mistakes
 

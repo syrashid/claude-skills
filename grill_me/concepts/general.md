@@ -1,6 +1,6 @@
-# Concept ledger
+# Concept ledger — general software engineering
 
-Cross-repo curriculum of transferable software-engineering concepts. Unchecked = still in retest rotation. See "The concept ledger" in SKILL.md for the rules.
+Cross-repo curriculum of transferable software-engineering concepts. Unchecked = still in retest rotation. See "The concept ledger" in SKILL.md for the rules; topic-specific ledgers (e.g. machine-learning.md) live alongside this file.
 
 - [ ] Idempotency keys — a caller-chosen key on a remote mutation makes crash-retry safe by construction: the retry returns the original result instead of acting twice (introduced 2026-07-07, Stripe subscription create / dual-write crash)
 - [ ] Dual-write problem — two systems, no atomic commit: any crash between the writes strands one side; mitigations are idempotent remote calls, write-ahead intent records, and reconciliation (introduced 2026-07-07, Stripe create + local mirror)
