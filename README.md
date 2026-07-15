@@ -37,4 +37,8 @@ To pull future updates: `git -C ~/.claude/skills pull`.
   and maintainability.
 - **grill_me** — Runs an oral exam on your own recent branch work in three parts:
   high-level summary, line-by-line deep dive, then an adaptive, tangent-safe
-  grilling that grades hard and teaches the gaps.
+  grilling that grades hard and teaches the gaps. Automatically folds in a recent
+  `explain-diff-html` explainer as context when one exists.
+- **explain-diff-html** — Produces a rich, self-contained HTML explanation of a code
+  change (background, intuition, code walkthrough with diagrams), then hands off to
+  `grill_me` to test your understanding.

@@ -46,6 +46,14 @@ git log --oneline <base>..HEAD          # commits in scope
 
 For "recent work" scope, diff against the appropriate recent commit (e.g. `HEAD~N` or a SHA the user names) instead of the merge-base. Read the full files around the most important hunks — you cannot grill on code you've only seen as a diff fragment.
 
+**Fold in a recent explainer if one exists.** The `explain-diff-html` skill writes a date-stamped HTML explanation of a change to a global path (e.g. `/tmp/2026-01-12-explanation-<slug>.html`). If the user just came from that skill — or one plausibly covers this scope — pick it up and use it as context:
+
+```bash
+ls -t /tmp/*-explanation-*.html 2>/dev/null | head -5   # most recent explainers, newest first
+```
+
+Read the most recent match (or the one whose slug matches the branch/change). It already contains a curated Background → Intuition → Code walkthrough of *this* change — treat it as pre-built teaching material: lean on its framing and examples in Parts 1–2, and in Part 3 grill on the concepts it introduced (the reader has seen the explanation, so questions test whether they *understood* it, not whether they read it). Don't blindly trust it over the actual code — the diff is still the source of truth; reconcile any drift in the code's favor. If no explainer exists, proceed normally.
+
 Also read the concept ledgers in this skill's `concepts/` directory (see "The concept ledger" below): always `concepts/general.md`, plus any topic ledger whose domain the branch touches — e.g. `concepts/machine-learning.md` whenever the project or diff is ML/AI-flavored (embeddings, retrieval/RAG, chunking, model training or evaluation, LLM calls, prompt systems). Unchecked entries in every ledger you read are retest material for Part 3.
 
 ## Part 1 — High-level summary
@@ -78,6 +86,8 @@ End with: **"Review the deep dive. Tell me when you're ready to be grilled."** T
 Ask **5–15 open-ended questions, one at a time**, scaling the count to the size and complexity of the change. Every question must be **grounded in the actual diff** — reference specific code, decisions, or tradeoffs the user made. No generic textbook questions.
 
 **Question shape.** A question is one scenario plus **at most two asks** (numbered parts, sub-questions, or "and also…" clauses). If a topic genuinely needs a third ask, that third ask is a *new question*: give it its own slot in the queue and count it against the 5–15. The cap applies to what you plan and ask up front; reactive follow-ups that press on a weak answer (protocol step 2 below) are not asks and never count. Count asks honestly: a trailing "— and how would you fix it?" clause is a third ask, not punctuation — save it for the follow-up.
+
+**Follow-ups and scaffolds are bound by the same shape.** A press or hint is ONE question on one thread — never a multi-part walkthrough ("walk X, then Y, and the key question is Z"). If a scaffold would need multiple parts, treat the question as missed: give the answer concisely, log it for the grade, and move on. Two presses on the same question is the ceiling.
 
 **Before you start, build a question queue.** Draft a numbered list of planned questions that spans the dimensions below — don't ask ten architecture questions and skip CS fundamentals or testing entirely. Aim for at least one question from most dimensions, weighted toward whatever this particular change actually stresses. Keep this queue as a concrete artifact you track throughout Part 3: which question you're on, which are answered, which remain. You don't have to show the user the full list (it would let them pre-load answers), but you must hold yourself to it and always know your place in it. Adaptive difficulty changes *what* the next question probes, not whether you work through the queue.
 
@@ -143,6 +153,7 @@ Entries live at the concept level, never the repository level: *"the webhook tab
 - **Generic questions.** "What is a database index?" is worthless. "You added an index on `check_ins.mpuser_id` in this migration — why that column and not the composite, and what query are you optimizing?" is the job.
 - **Stuffing three-plus parts into each question.** Parts multiply: a 12-question grill with 3 pre-planned parts each is really 36 questions and exhausts the user. One scenario, at most two asks; promote any third ask to its own queue slot.
 - **Accepting a weak answer.** A grill that takes the first answer isn't a grill. Follow up.
+- **Scaffold sprawl.** Turning a missed answer into a six-part sub-interview. One scaffold question, then teach and move on. Respect the user's clock: a session should land near an hour, not three — when it runs long, trim the queue to the highest-value remaining questions and say so.
 - **Grilling on code you didn't read in full.** Read the surrounding files, not just the diff hunks.
 - **Softening the grade.** Honest beats kind here.
 - **Scoring without teaching.** A tally with no explanation wastes the session. Every miss must leave them understanding the thing they didn't know before.
