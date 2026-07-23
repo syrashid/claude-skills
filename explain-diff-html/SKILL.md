@@ -1,6 +1,6 @@
 ---
 name: explain-diff-html
-description: Use when the user asks for a rich explanation of a code change, diff, branch, or PR. Produces a self-contained HTML explainer, then hands off to grill_me for testing understanding.
+description: Use when the user asks for a rich explanation of a code change, diff, branch, or PR. Produces a self-contained HTML explainer, then hands off to grill_me for testing understanding. For a whole-repo architecture overview or onboarding to unfamiliar code (not a specific change), use explain-codebase-html instead.
 ---
 
 # Explain Diff
