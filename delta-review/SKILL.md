@@ -19,6 +19,10 @@ git show <sha>                  # individual commit
 
 Determine the base branch from `git remote show origin | grep 'HEAD branch'` or default to `main`. Use the `<base>...HEAD` (three-dot) form so you see only what this branch introduced, not unrelated changes on the base.
 
+## Scale calibration
+
+Before writing findings, establish the product's deployment reality from the repo and conversation: tenancy model, plausible user counts, traffic shape. Weight Performance, Scalability, and race-condition findings against that reality — a contention bug needing thousands of concurrent writers is not High severity in a B2B tool with 2–3 users per tenant, and "won't scale to 100k users" is only a finding when 100k users is a plausible future. Two exceptions keep their severity regardless of scale: **security** (one attacker is enough — always assume adversarial input) and **silent data corruption or loss** (low probability × unrecoverable is still serious). Everything else: severity reflects likelihood at actual scale, and hypothetical-scale observations go to Low / minor concerns, labeled as such.
+
 ## Review criteria
 
 Evaluate the branch for:
@@ -70,4 +74,4 @@ Reference findings with `file_path:line_number` so the user can jump straight to
 - Do not praise or restate obvious things.
 - Prefer fewer, high-signal findings over many low-value ones.
 - If no major issues exist, explicitly say: **"No significant issues found"** and list any minor concerns separately.
-- Assume production context with real users and adversarial input.
+- Assume production context with real users and adversarial input — but size "real users" per the scale calibration above; adversarial assumptions apply to security, not to imagined load.

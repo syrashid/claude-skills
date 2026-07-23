@@ -93,7 +93,8 @@ Ask **5–15 open-ended questions, one at a time**, scaling the count to the siz
 
 Draw questions across these dimensions:
 
-- **System design** — how this behaves under load, at scale, under failure; data flow; bottlenecks.
+- **System design** — data flow, failure behavior, bottlenecks — posed at the product's *actual* scale (see calibration below), never a hypothetical million-user one.
+- **Language & framework fluency** — the idioms and mechanics the diff actually uses (Ruby/Rails semantics, JavaScript's event model, SQL behavior, framework conventions): "what does this construct really do, and when would it surprise you?" For a user reviewing AI-written code this dimension is core, not filler — it's how the code stops being someone else's.
 - **Architecture & Design Patterns** — design patterns, boundaries, coupling, where this logic *should* live, alternatives to the chosen structure.
 - **Design choices & tradeoffs** — "why X instead of Y?", what they gave up, what assumptions they baked in.
 - **Engineering judgment** — testing strategy, observability, migration safety, rollback, edge cases, race conditions.
@@ -101,6 +102,8 @@ Draw questions across these dimensions:
 - **Operational readiness** — this breaks at 2am: what signal fires, what do you look at first, what's the rollback?
 - **Blast radius & rollout** — who else must know before this merges; migration/rollout sequencing; backward compatibility; which decisions are one-way doors vs. cheap to reverse.
 - **Steel-manning** — after they defend a choice, make them argue the strongest case for the alternative they rejected.
+
+**Calibrate scenarios to the product's real scale.** Establish the deployment reality before drafting the queue (tenancy model, user counts, traffic shape — e.g. a B2B tool with 2–3 concurrent users per tenant vs. a consumer API), and pose failure scenarios at that scale: a race two coworkers could plausibly hit is fair game; one needing thousands of concurrent writers is not. Severity still counts alongside probability — a low-probability failure that *silently corrupts or loses data* can merit a question; a low-probability failure that surfaces as a loud, recoverable error usually doesn't. Hard cap: 1–2 concurrency/race questions per session, only where the diff touches shared mutable state, and never let one dimension colonize the queue — past sessions over-indexed on concurrency and crowded out the breadth (language fluency, framework mechanics, design shape) that is the actual point for a user whose code is mostly AI-written.
 
 Part 3 questions should mostly make the user **apply what Parts 1–2 taught** to failure scenarios and consequences — teach first, then test. A question about something never surfaced earlier should be the exception, not the pattern.
 
@@ -146,6 +149,7 @@ Entries live at the concept level, never the repository level: *"the webhook tab
 
 - **Retest (Part 3):** include **1–2 questions** on unchecked entries drawn from *every ledger read this session*, applied to the current branch's code where it plausibly connects, abstract otherwise. Retests count as queued questions. **The PR is the syllabus, the ledger is the review**: roughly 80% of Part 3 comes from the branch and no more than ~20% from the ledgers — retests never crowd out the diff. Only when the PR is very small may the ledger share grow.
 - **Update (after the grade):** append every new concept the session taught or exposed as a gap — one line each, filed into the topic file it belongs to: `- [ ] <concept> — <one-sentence essence> (introduced YYYY-MM-DD, <context>)`. When the user answers a retest solidly, check it off with the date. A concept stays in rotation until nailed; if a checked-off concept resurfaces as a miss, uncheck it.
+- **Balance (curation):** keep each ledger topically diverse. When one domain (e.g. concurrency) dominates the unchecked pool, retire or merge same-domain entries rather than adding more, and preferentially file concepts from under-represented domains (language idioms, framework mechanics, testing, ops, product-shaped design). The retest loop compounds — unchecked entries beget same-domain questions beget same-domain entries — and it must not turn the ledger into a single-topic curriculum. It did once (concurrency, mid-2026); treat that as the cautionary example.
 
 ## Common mistakes
 
