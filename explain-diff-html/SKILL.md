@@ -26,14 +26,23 @@ Format:
     Before saving the file, scan each code block in the HTML source and confirm its CSS includes
     `white-space: pre` or `pre-wrap`.
 - Use callouts for key concepts or definitions, important edge cases, etc.
+- Theme the page with CSS variables so it works in light and dark. Declare the light values on `:root`, override them in `@media (prefers-color-scheme: dark)`, and ALSO duplicate both sets as `:root[data-theme="light"]` and `:root[data-theme="dark"]` overrides — the artifact viewer (below) stamps `data-theme` on the root element for its theme toggle, and those selectors must win over the media query.
+
+## Publish it as an Artifact too
+
+Always publish the explainer to claude.ai via the Artifact tool, in addition to writing the /tmp file (keep the /tmp file — grill_me discovers it there):
+
+1. The Artifact harness wraps the content in its own `<!doctype>…<head>…<body>` skeleton, so don't publish the /tmp file directly. Make a copy in the scratchpad with the wrapper lines stripped — remove `<!DOCTYPE>`, `<html>`, `</html>`, `<head>`, `</head>`, `<body>`, `</body>`, and `<meta>` lines; keep the `<title>`, `<style>`, content, and `<script>`. If each wrapper tag sits on its own line, a `sed` over the file does it.
+2. The page must stay fully self-contained (the artifact CSP blocks all external requests) — these explainers already are; don't add CDN links.
+3. Call Artifact with the stripped copy's path, a one-sentence `description`, and a stable `favicon` (e.g. "📖"). The `<title>` in the file names the artifact.
 
 ## After you produce the file — hand off to grill_me
 
 Reading an explanation proves you *followed* it, not that you *understand* it. So don't end with a quiz baked into the page — a passive multiple-choice click-through is weak signal and easy to breeze past. Instead, once the file is written:
 
-1. Tell the user where the file is (the full path) and give a one-line summary of what it covers.
+1. Tell the user where the file is (the full path) and the artifact URL, and give a one-line summary of what it covers.
 2. Prompt them to pressure-test their understanding with the **grill_me** skill, e.g.:
 
-   > The explainer is at `/tmp/2026-01-12-explanation-<slug>.html`. When you've read it, say **"grill me"** and I'll run an oral exam on these changes — grill_me will pick up this explainer as context and grill you on the concepts it introduced.
+   > The explainer is at `/tmp/2026-01-12-explanation-<slug>.html`, or read it at <artifact URL>. When you've read it, say **"grill me"** and I'll run an oral exam on these changes — grill_me will pick up this explainer as context and grill you on the concepts it introduced.
 
 Leave the file path visible so grill_me can discover it (grill_me looks for the most recent `/tmp/*-explanation-*.html`). Do **not** start grilling in this same turn — let the user read first and invoke grill_me when ready.
