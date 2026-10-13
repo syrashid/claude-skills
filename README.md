@@ -42,7 +42,7 @@ To pull future updates: `git -C ~/.claude/skills pull`.
 - **explain-diff-html** — Produces a rich, self-contained HTML explanation of a code
   change (background, intuition, code walkthrough with diagrams), then hands off to
   `grill_me` to test your understanding.
-- **review-sequencer** — Builds a plan with subagents in tasks under 100 lines (tests
+- **use-build-and-review-sequence** — Builds a plan with subagents in tasks under 100 lines (tests
   excluded), tracks them in a ledger, then reviews each task one at a time (what and
   why, then all the code), fixes feedback as follow-up commits, and ends with an
   end-to-end walkthrough.

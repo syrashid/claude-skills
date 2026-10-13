@@ -1,9 +1,9 @@
 ---
-name: review-sequencer
+name: use-build-and-review-sequence
 description: Use when executing an implementation plan that Sy will review afterward, or when Sy asks to review built work task by task, walk through commits, or "start the review".
 ---
 
-# Review Sequencer
+# Build and Review Sequence
 
 Build with subagents, then walk Sy through every task, one at a time, and finish with an end-to-end view. Sy reviews the code to learn it, so every review is plain English and shows all of the code.
 
